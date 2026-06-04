@@ -4,19 +4,22 @@ from pypdf import PdfReader
 import numpy as np
 import os
 import pickle
+from dotenv import load_dotenv
+
+load_dotenv()  # ✅ loads .env file
 
 # --- Azure Config ---
-api_key = os.getenv("AZURE_API_KEY")
-api_endpoint = os.getenv("API_ENDPOINT")
+AZURE_API_KEY = os.getenv("AZURE_API_KEY")
+API_ENDPOINT = os.getenv("API_ENDPOINT")
+API_VERSION = os.getenv("API_VERSION")
+EMBED_MODEL = os.getenv("EMBED_MODEL")
+CHAT_MODEL = os.getenv("CHAT_MODEL")
 
 client = AzureOpenAI(
-    api_key=api_key,
-    api_version="2024-02-15-preview",
-    azure_endpoint=api_endpoint
+    api_key=AZURE_API_KEY,
+    api_version=API_VERSION,
+    azure_endpoint=API_ENDPOINT
 )
-
-CHAT_MODEL = "gpt-4o-mini"
-EMBED_MODEL = "text-embedding-3-small"
 
 DATA_PATH = "data/"
 
