@@ -1,3 +1,19 @@
+'''
+RAG - Retrival Augmented Generation
+R - Retrieval: Find relevant info from a large corpus (e.g. PDFs)
+A - Augmentation: Use retrieved info to enhance LLM's knowledge
+G - Generation: LLM generates answer using augmented context
+
+PDF → chunks → embeddings
+        ↓
+Query → embedding
+        ↓
+[File Embeddings + Query Embedding] → Similarity Search (Find Top chunks/vectors)
+        ↓
+[Top chunks + Query] → LLM
+        ↓
+[Answer]
+'''
 import streamlit as st
 from openai import AzureOpenAI
 from pypdf import PdfReader
