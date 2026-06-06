@@ -78,20 +78,20 @@ def process_meeting(transcript):
 # Streamlit UI
 st.title("AI Meeting Assistant")
 
-uploaded_file = st.file_uploader("Upload Meeting Audio", type=["mp3", "wav"])
+uploaded_file = st.file_uploader("Upload Meeting Audio", type=["mp4", "wav"])
 
 if uploaded_file:
     with open("audio.wav", "wb") as f:
         f.write(uploaded_file.read())
 
-    st.info("Transcribing...")
-    transcript = transcribe_audio("audio.wav")
+    with st.spinner("Transcribing..."):
+        transcript = transcribe_audio("audio.wav")
 
     st.subheader("Transcript")
     st.write(transcript)
-
-    st.info("Analyzing...")
-    insights = process_meeting(transcript)
+    
+    with st.spinner("Analyzing..."):
+        insights = process_meeting(transcript)
 
     st.subheader("Meeting Insights")
     st.write(insights)
