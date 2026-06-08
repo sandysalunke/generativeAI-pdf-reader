@@ -63,7 +63,6 @@ def create_embeddings(chunks):
         embs.append(res.data[0].embedding)
     return np.array(embs)
 
-
 def search(query, embeddings, chunks):
     q_emb = client.embeddings.create(model=EMBED_MODEL, input=query).data[0].embedding
     q_emb = np.array(q_emb)
@@ -125,7 +124,6 @@ if "embeddings" not in st.session_state:
     
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-
 
 if "uploaded_names" not in st.session_state:
     st.session_state.uploaded_names = []
