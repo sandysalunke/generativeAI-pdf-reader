@@ -2,6 +2,11 @@
 from openai import AzureOpenAI
 from pypdf import PdfReader
 import numpy as np
+import os
+from dotenv import load_dotenv
+from config import DATA_PATH, EMBED_MODEL, CHAT_MODEL
+
+load_dotenv()
 
 # --- Azure Config ---
 api_key = os.getenv("AZURE_API_KEY")
@@ -12,11 +17,6 @@ client = AzureOpenAI(
     api_version="2024-02-15-preview",
     azure_endpoint=api_endpoint
 )
-
-
-CHAT_MODEL = "gpt-4o-mini"             # your deployment name
-EMBEDDING_MODEL = "text-embedding-3-small"
-
 
 # --- STEP 1: Load PDF ---
 def load_pdf(file_path):
@@ -49,7 +49,7 @@ def create_embeddings(chunks):
 
     for chunk in chunks:
         response = client.embeddings.create(
-            model=EMBEDDING_MODEL,
+            model=EMBED_MODEL,
             input=chunk
         )
         embeddings.append(response.data[0].embedding)
@@ -60,7 +60,7 @@ def create_embeddings(chunks):
 # --- STEP 4: Find Relevant Context ---
 def search(query, embeddings, chunks):
     query_embedding = client.embeddings.create(
-        model=EMBEDDING_MODEL,
+        model=EMBED_MODEL,
         input=query
     ).data[0].embedding
 
@@ -97,7 +97,7 @@ def ask_llm(query, context):
 
 # --- MAIN ---
 if __name__ == "__main__":
-    file_path = "CV_Vikas Dixit QA and Automation Lead and Project Maneger.pdf"  # 🔹 replace
+    file_path = DATA_PATH + "Sandip Salunke-Resume.pdf"  # 🔹 replace
 
     print("📄 Loading PDF...")
     text = load_pdf(file_path)
