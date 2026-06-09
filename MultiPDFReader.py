@@ -15,99 +15,11 @@ Query → embedding
 [Answer]
 '''
 import streamlit as st
-from openai import AzureOpenAI
-from pypdf import PdfReader
-import numpy as np
-import os
-import pickle
-from dotenv import load_dotenv
-
-load_dotenv()  # ✅ loads .env file
-
-# --- Azure Config ---
-AZURE_API_KEY = os.getenv("AZURE_API_KEY")
-API_ENDPOINT = os.getenv("API_ENDPOINT")
-API_VERSION = os.getenv("API_VERSION")
-EMBED_MODEL = os.getenv("EMBED_MODEL")
-CHAT_MODEL = os.getenv("CHAT_MODEL")
-
-client = AzureOpenAI(
-    api_key=AZURE_API_KEY,
-    api_version=API_VERSION,
-    azure_endpoint=API_ENDPOINT
-)
-
-DATA_PATH = "data/"
-
-
-# --- Helpers ---
-def load_pdf(file):
-    reader = PdfReader(file)
-    text = ""
-    for page in reader.pages:
-        t = page.extract_text()
-        if t:
-            text += t
-    return text
-
-
-def chunk_text(text, size=300):
-    words = text.split()
-    return [" ".join(words[i:i+size]) for i in range(0, len(words), size)]
-
-
-def create_embeddings(chunks):
-    embs = []
-    for c in chunks:
-        res = client.embeddings.create(model=EMBED_MODEL, input=c)
-        embs.append(res.data[0].embedding)
-    return np.array(embs)
-
-def search(query, embeddings, chunks):
-    q_emb = client.embeddings.create(model=EMBED_MODEL, input=query).data[0].embedding
-    q_emb = np.array(q_emb)
-
-    scores = np.dot(embeddings, q_emb)
-    top_k = 3
-    idxs = np.argsort(scores)[-top_k:]
-
-    return " ".join([chunks[i] for i in idxs])
-
-
-def ask_llm(query, context):
-    prompt = f"""
-    Answer only using the context.
-
-    Context:
-    {context}
-
-    Question:
-    {query}
-    """
-
-    res = client.chat.completions.create(
-        model=CHAT_MODEL,
-        messages=[
-            {"role": "system", "content": "You are an enterprise assistant."},
-            {"role": "user", "content": prompt}
-        ]
-    )
-    return res.choices[0].message.content
-
+from helpers.embeddings import create_embeddings, search
+from helpers.utils import chunk_text, load_pdf, save_data, load_data
+from helpers.llm import ask_llm
 
 # --- Persistence ---
-def save_data(embeddings, chunks):
-    os.makedirs(DATA_PATH, exist_ok=True)
-    pickle.dump(embeddings, open(DATA_PATH + "embeddings.pkl", "wb"))
-    pickle.dump(chunks, open(DATA_PATH + "chunks.pkl", "wb"))
-
-def load_data():
-    try:
-        embeddings = pickle.load(open(DATA_PATH + "embeddings.pkl", "rb"))
-        chunks = pickle.load(open(DATA_PATH + "chunks.pkl", "rb"))
-        return embeddings, chunks
-    except:
-        return None, None
 
 # Display chat
 def display_chat():

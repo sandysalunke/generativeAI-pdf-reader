@@ -1,5 +1,6 @@
 import os
 import pickle
+from pypdf import PdfReader
 from config import DATA_PATH
 
 def load_data():
@@ -18,3 +19,13 @@ def save_data(embeddings, chunks):
 def chunk_text(text, size=300):
     words = text.split()
     return [" ".join(words[i:i+size]) for i in range(0, len(words), size)]
+
+# --- Helpers ---
+def load_pdf(file):
+    reader = PdfReader(file)
+    text = ""
+    for page in reader.pages:
+        t = page.extract_text()
+        if t:
+            text += t
+    return text
