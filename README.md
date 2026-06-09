@@ -1,4 +1,4 @@
-# generativeAI-pdf-reader
+# GenerativeAI Practice projects
 Generative AI practice project in Python using streamlite UI
 
 To run these apps
