@@ -11,6 +11,7 @@ API_VERSION = os.getenv("API_VERSION")
 WHISPER_MODEL = os.getenv("WHISPER_MODEL")
 EMBED_MODEL = os.getenv("EMBED_MODEL")
 CHAT_MODEL = os.getenv("CHAT_MODEL")
+IMAGE_MODEL = os.getenv("IMAGE_MODEL")
 DATA_PATH = "data/"
 
 client = AzureOpenAI(

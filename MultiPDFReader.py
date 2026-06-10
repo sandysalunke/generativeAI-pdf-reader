@@ -19,8 +19,6 @@ from helpers.embeddings import create_embeddings, search
 from helpers.utils import chunk_text, load_pdf, save_data, load_data
 from helpers.llm import ask_llm
 
-# --- Persistence ---
-
 # Display chat
 def display_chat():
     for role, msg in st.session_state.chat_history:

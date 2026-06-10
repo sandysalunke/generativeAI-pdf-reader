@@ -1,4 +1,5 @@
-from config import client, CHAT_MODEL
+from config import client, CHAT_MODEL, IMAGE_MODEL
+import base64
 
 def ask_llm(query, context):
     prompt = f"""
@@ -47,3 +48,12 @@ def process_meeting(transcript):
         temperature=0.3
     )
     return response.choices[0].message.content
+
+def generate_image(prompt):
+    result = client.images.generate(
+        model=IMAGE_MODEL,
+        prompt=prompt,
+        size="1024x1024"
+    )
+    
+    return base64.b64decode(result.data[0].b64_json)

@@ -62,4 +62,3 @@ if st.session_state.embeddings is not None:
     
     if st.button("Clear Chat"):
         st.session_state.chat_history = []
-
